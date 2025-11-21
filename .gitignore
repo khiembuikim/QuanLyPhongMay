@@ -1,0 +1,18 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.log
+
+# Build folders
+bin/
+obj/
+
+# Other ignores
+*.psess
+*.vsp
+*.pdb
+*.dbmdl
+*.jfm
+*.DS_Store
