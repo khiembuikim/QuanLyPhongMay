@@ -61,17 +61,18 @@ namespace BTL_LTTQ_QLPM.Forms
                 try
                 {
                     conn.Open();
-                    // Cập nhật SQL: THÊM T.NHANVIEN_ID vào danh sách SELECT
+                    // KHÔNG CẦN CẬP NHẬT SQL NÀY NỮA, NÓ ĐÃ ĐÚNG:
                     string sql = @"
-                SELECT 
-                    T.NHANVIEN_ID,        -- 0: Cột mới THÊM
-                    T.PASSWORD_HASH,      -- 1: Mật khẩu đã hash
-                    R.ROLE_NAME,          -- 2: Tên vai trò
-                    NVL(NV.HO_TEN, T.USERNAME) AS FULL_NAME -- 3: Họ tên
-                FROM TAIKHOAN T 
-                JOIN ROLES R ON T.ROLE_ID = R.ROLE_ID
-                LEFT JOIN NHANVIEN NV ON T.NHANVIEN_ID = NV.NHANVIEN_ID
-                WHERE T.USERNAME = :u";
+SELECT 
+    T.NHANVIEN_ID,      -- Vị trí 0: ID cho ADMIN/NHANVIEN
+    T.GIANGVIEN_ID,     -- Vị trí 1: ID cho GIANGVIEN
+    T.PASSWORD_HASH,    -- Vị trí 2: HASH MẬT KHẨU
+    R.ROLE_NAME,        -- Vị trí 3
+    NVL(NV.HO_TEN, T.USERNAME) AS FULL_NAME -- Vị trí 4
+FROM TAIKHOAN T 
+JOIN ROLES R ON T.ROLE_ID = R.ROLE_ID
+LEFT JOIN NHANVIEN NV ON T.NHANVIEN_ID = NV.NHANVIEN_ID
+WHERE T.USERNAME = :u";
 
                     OracleCommand cmd = new OracleCommand(sql, conn);
                     cmd.Parameters.Add(":u", user);
@@ -80,55 +81,73 @@ namespace BTL_LTTQ_QLPM.Forms
 
                     if (reader.Read())
                     {
-                        // 1. Lấy tất cả thông tin cần thiết
-                        int nhanVienId = reader.IsDBNull(0) ? -1 : reader.GetInt32(0); // Lấy NHANVIEN_ID
-                        string storedHash = reader.GetString(1);
-                        string roleName = reader.GetString(2);
-                        string fullName = reader.GetString(3);
+                        // 1. Lấy tất cả thông tin cần thiết và SỬA LỖI VỊ TRÍ CỘT:
+
+                        // Lấy NHANVIEN_ID (Vị trí 0)
+                        int nhanVienId = reader.IsDBNull(0) ? -1 : reader.GetInt32(0);
+
+                        // LẤY GIANGVIEN_ID (Vị trí 1) - CỘT THIẾT YẾU CẦN DÙNG CHO GIẢNG VIÊN
+                        int giangVienId = reader.IsDBNull(1) ? -1 : reader.GetInt32(1);
+
+                        // LẤY HASH MẬT KHẨU (Vị trí 2) - ĐÃ SỬA VỊ TRÍ CỘT
+                        string storedHash = reader.GetString(2);
+
+                        // LẤY ROLE VÀ TÊN (Vị trí 3, 4)
+                        string roleName = reader.GetString(3);
+                        string fullName = reader.GetString(4);
 
                         // 2. Hash mật khẩu người dùng nhập và so sánh
                         string enteredHash = HASHING_FUNCTION(pass);
 
                         if (storedHash == enteredHash)
                         {
-                            // Đăng nhập thành công!
+                            // XÁC ĐỊNH ID SẼ DÙNG DỰA TRÊN VAI TRÒ
+                            int currentUserId = -1;
+                            if (roleName == "GIANGVIEN")
+                            {
+                                currentUserId = giangVienId; // SỬ DỤNG GIANGVIEN_ID
+                            }
+                            else // ADMIN, NHANVIEN, etc.
+                            {
+                                currentUserId = nhanVienId; // SỬ DỤNG NHANVIEN_ID
+                            }
 
-                            // TODO: Tạo/Cập nhật class UserSessionInfo (Nếu chưa có, cần tạo)
-                            // Hiện tại, ta sẽ bỏ qua UserSessionInfo và chỉ tập trung vào việc chuyển form.
+                            if (currentUserId <= 0)
+                            {
+                                // Hiển thị lỗi ID nếu ID là NULL/0 (Sau khi đăng nhập thành công)
+                                MessageBox.Show("Lỗi: ID người dùng không hợp lệ sau khi xác thực.", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
+                            // Đăng nhập thành công và ID hợp lệ
                             this.Hide();
+                            // ... (Tạo UserSessionInfo) ...
                             UserSessionInfo currentUser = new UserSessionInfo
                             {
-                                // Bạn cần thêm thuộc tính NhanVienID vào class UserSessionInfo
-                                // NhanVienID = nhanVienId, 
+                                // ... (Gán các thuộc tính khác)
                                 Username = user,
                                 FullName = fullName,
                                 RoleName = roleName
                             };
 
+                            // CHUYỂN FORM DÙNG currentUserId
                             if (roleName == "ADMIN")
                             {
-                                // *** ĐIỀU CHỈNH QUAN TRỌNG: TRUYỀN ID vào Constructor FormMainAdmin ***
                                 BTL_LTTQ_QLPM.Forms.Admin.FormMainAdmin adminForm =
-            new BTL_LTTQ_QLPM.Forms.Admin.FormMainAdmin(nhanVienId, currentUser);
-
-                                // KHÔNG CẦN gọi adminForm.UpdateUserInfo(currentUser) nữa,
-                                // vì nó đã được gọi trong Constructor của FormMainAdmin.
-
+                                    new BTL_LTTQ_QLPM.Forms.Admin.FormMainAdmin(currentUserId, currentUser);
                                 adminForm.Show();
-              
                             }
                             else if (roleName == "GIANGVIEN")
                             {
-                                // Cần tạo Constructor tương tự cho FormMainGiangVien nếu có logic sử dụng ID
-                                new GiangVien.FormMainGiangVien().Show();
+                                GiangVien.FormMainGiangVien f = new GiangVien.FormMainGiangVien(currentUserId, currentUser);
+                                f.Show();
                             }
                             else // Các vai trò khác (Ví dụ: Nhân viên)
                             {
-                                new NhanVien.FormMainNhanVien().Show();
+                                BTL_LTTQ_QLPM.Forms.NhanVien.FormMainNhanVien nvForm =
+                                    new BTL_LTTQ_QLPM.Forms.NhanVien.FormMainNhanVien(currentUserId, currentUser);
+                                nvForm.Show();
                             }
-
-                            // Form Login sẽ đóng khi các Form Main mở ra.
                         }
                         else
                         {

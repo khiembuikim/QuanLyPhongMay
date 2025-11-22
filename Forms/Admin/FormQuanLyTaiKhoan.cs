@@ -219,7 +219,7 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             string usernameToDisable = dgvUserList.SelectedRows[0].Cells["USERNAME"].Value.ToString();
 
             // Lấy trạng thái hiện tại (Đang hoạt động/Đã bị khóa)
-            string statusText = dgvUserList.SelectedRows[0].Cells["IS_ACTIVE_COL"].Value.ToString();
+            string statusText = dgvUserList.SelectedRows[0].Cells["IS_ACTIVE"].Value.ToString();
 
             // 1. KIỂM TRA TÀI KHOẢN HIỆN TẠI
             if (statusText == "Đã bị khóa")

@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,6 +46,7 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.23.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>packages\Oracle.ManagedDataAccess.23.26.0\lib\net472\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
@@ -97,13 +99,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Databases\LichDatDB.cs" />
+    <Compile Include="Databases\MayTinhDB.cs" />
+    <Compile Include="Databases\NhanVienDB.cs" />
     <Compile Include="Databases\OracleHelper.cs" />
+    <Compile Include="Databases\PhongMayDB.cs" />
     <Compile Include="Databases\TaiKhoanDB.cs" />
+    <Compile Include="Databases\TaskDB.cs" />
     <Compile Include="Forms\Admin\FormDanhGiaNhiemVu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Admin\FormDanhGiaNhiemVu.Designer.cs">
       <DependentUpon>FormDanhGiaNhiemVu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FormGhiLoi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormGhiLoi.Designer.cs">
+      <DependentUpon>FormGhiLoi.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Admin\FormGiaoNhiemVu.cs">
       <SubType>Form</SubType>
@@ -141,11 +154,35 @@
     <Compile Include="Forms\Admin\FormQuanLyTaiKhoan.Designer.cs">
       <DependentUpon>FormQuanLyTaiKhoan.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Admin\FormSuaPhong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormSuaPhong.Designer.cs">
+      <DependentUpon>FormSuaPhong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Admin\FormSuaTaiKhoan.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Admin\FormSuaTaiKhoan.Designer.cs">
       <DependentUpon>FormSuaTaiKhoan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FormSuaViTri.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormSuaViTri.Designer.cs">
+      <DependentUpon>FormSuaViTri.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FormThemMayTinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormThemMayTinh.Designer.cs">
+      <DependentUpon>FormThemMayTinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Admin\FormThemPhong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormThemPhong.Designer.cs">
+      <DependentUpon>FormThemPhong.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Admin\FormThemTaiKhoan.cs">
       <SubType>Form</SubType>
@@ -161,11 +198,47 @@
     <Compile Include="Forms\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GiangVien\FormDatPhongMay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GiangVien\FormDatPhongMay.Designer.cs">
+      <DependentUpon>FormDatPhongMay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GiangVien\FormLichCuaToi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GiangVien\FormLichCuaToi.Designer.cs">
+      <DependentUpon>FormLichCuaToi.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GiangVien\FormMainGiangVien.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\GiangVien\FormMainGiangVien.Designer.cs">
       <DependentUpon>FormMainGiangVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GiangVien\FormTinhTrangPhong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GiangVien\FormTinhTrangPhong.Designer.cs">
+      <DependentUpon>FormTinhTrangPhong.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormGiamSatMayTinh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormGiamSatMayTinh.Designer.cs">
+      <DependentUpon>FormGiamSatMayTinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormLichLamViecNhanVien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormLichLamViecNhanVien.Designer.cs">
+      <DependentUpon>FormLichLamViecNhanVien.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormLuongThang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormLuongThang.Designer.cs">
+      <DependentUpon>FormLuongThang.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\NhanVien\FormMainNhanVien.cs">
       <SubType>Form</SubType>
@@ -173,12 +246,28 @@
     <Compile Include="Forms\NhanVien\FormMainNhanVien.Designer.cs">
       <DependentUpon>FormMainNhanVien.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\NhanVien\FormNhiemVuCuaToi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormNhiemVuCuaToi.Designer.cs">
+      <DependentUpon>FormNhiemVuCuaToi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormThongTinPhongMay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NhanVien\FormThongTinPhongMay.Designer.cs">
+      <DependentUpon>FormThongTinPhongMay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PhongMay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserSessionInfo.cs" />
     <Compile Include="Utils\Utils.cs" />
     <EmbeddedResource Include="Forms\Admin\FormDanhGiaNhiemVu.resx">
       <DependentUpon>FormDanhGiaNhiemVu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormGhiLoi.resx">
+      <DependentUpon>FormGhiLoi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\FormGiaoNhiemVu.resx">
       <DependentUpon>FormGiaoNhiemVu.cs</DependentUpon>
@@ -189,11 +278,29 @@
     <EmbeddedResource Include="Forms\Admin\FormQuanLiLichPhong.resx">
       <DependentUpon>FormQuanLiLichPhong.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormQuanLyMayTinh.resx">
+      <DependentUpon>FormQuanLyMayTinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormQuanLyPhongMay.resx">
+      <DependentUpon>FormQuanLyPhongMay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\FormQuanLyTaiKhoan.resx">
       <DependentUpon>FormQuanLyTaiKhoan.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormSuaPhong.resx">
+      <DependentUpon>FormSuaPhong.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\FormSuaTaiKhoan.resx">
       <DependentUpon>FormSuaTaiKhoan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormSuaViTri.resx">
+      <DependentUpon>FormSuaViTri.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormThemMayTinh.resx">
+      <DependentUpon>FormThemMayTinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Admin\FormThemPhong.resx">
+      <DependentUpon>FormThemPhong.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\FormThemTaiKhoan.resx">
       <DependentUpon>FormThemTaiKhoan.cs</DependentUpon>
@@ -201,11 +308,35 @@
     <EmbeddedResource Include="Forms\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GiangVien\FormDatPhongMay.resx">
+      <DependentUpon>FormDatPhongMay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GiangVien\FormLichCuaToi.resx">
+      <DependentUpon>FormLichCuaToi.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\GiangVien\FormMainGiangVien.resx">
       <DependentUpon>FormMainGiangVien.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GiangVien\FormTinhTrangPhong.resx">
+      <DependentUpon>FormTinhTrangPhong.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NhanVien\FormGiamSatMayTinh.resx">
+      <DependentUpon>FormGiamSatMayTinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NhanVien\FormLichLamViecNhanVien.resx">
+      <DependentUpon>FormLichLamViecNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NhanVien\FormLuongThang.resx">
+      <DependentUpon>FormLuongThang.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\NhanVien\FormMainNhanVien.resx">
       <DependentUpon>FormMainNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NhanVien\FormNhiemVuCuaToi.resx">
+      <DependentUpon>FormNhiemVuCuaToi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NhanVien\FormThongTinPhongMay.resx">
+      <DependentUpon>FormThongTinPhongMay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -237,7 +368,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
