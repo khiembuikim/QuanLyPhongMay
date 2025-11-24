@@ -199,6 +199,21 @@ namespace BTL_LTTQ_QLPM.Forms.NhanVien
                 }
             }
         }
+
+        private void cboLocPhong_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
     }
     

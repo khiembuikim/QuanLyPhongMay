@@ -121,7 +121,7 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
         FROM TASK_ASSIGN TA
         JOIN TASK T ON TA.TASK_ID = T.TASK_ID
         JOIN NHANVIEN NV ON TA.NHANVIEN_ID = NV.NHANVIEN_ID
-        WHERE T.TRANG_THAI = 'Hoàn thành' -- Trạng thái task hoàn thành
+        WHERE T.TRANG_THAI = 'HOAN_THANH' -- Trạng thái task hoàn thành
           AND TA.DANH_GIA IS NULL -- Chưa có đánh giá
         ORDER BY TA.NGAY_HET_HAN ASC";
 

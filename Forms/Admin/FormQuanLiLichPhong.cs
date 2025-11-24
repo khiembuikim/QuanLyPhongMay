@@ -170,31 +170,6 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             LoadLichDat(); // Tải lại DataGridView
         }
 
-        private void btnChiTiet_Click(object sender, EventArgs e)
-        {
-            int lichId = GetSelectedLichId();
-            if (lichId == -1)
-            {
-                MessageBox.Show("Vui lòng chọn một lịch để xem chi tiết.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                // TODO: Viết hàm LichDatDB.GetLichChiTiet(lichId) trả về DataRow hoặc Custom Object
-                // Ví dụ: DataRow lichChiTiet = LichDatDB.GetLichChiTiet(lichId);
-
-                // Khởi tạo Form chi tiết và truyền ID hoặc đối tượng dữ liệu vào
-                // Giả sử FormLichChiTiet có Constructor nhận ID:
-                // Admin.FormLichChiTiet formChiTiet = new Admin.FormLichChiTiet(lichId);
-                // formChiTiet.ShowDialog();
-
-                MessageBox.Show($"Chức năng: Mở Form chi tiết cho Lịch ID: {lichId} (Cần code FormLichChiTiet).", "Xem Chi Tiết");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tải chi tiết lịch: " + ex.Message, "Lỗi Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+       
     }
-}
+    }

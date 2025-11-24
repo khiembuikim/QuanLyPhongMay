@@ -106,6 +106,12 @@
     <Compile Include="Databases\PhongMayDB.cs" />
     <Compile Include="Databases\TaiKhoanDB.cs" />
     <Compile Include="Databases\TaskDB.cs" />
+    <Compile Include="Forms\Admin\FormChiTietLichPhong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Admin\FormChiTietLichPhong.Designer.cs">
+      <DependentUpon>FormChiTietLichPhong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Admin\FormDanhGiaNhiemVu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,6 +269,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserSessionInfo.cs" />
     <Compile Include="Utils\Utils.cs" />
+    <EmbeddedResource Include="Forms\Admin\FormChiTietLichPhong.resx">
+      <DependentUpon>FormChiTietLichPhong.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\FormDanhGiaNhiemVu.resx">
       <DependentUpon>FormDanhGiaNhiemVu.cs</DependentUpon>
     </EmbeddedResource>

@@ -26,7 +26,7 @@ namespace BTL_LTTQ_QLPM.Databases
             // Hàm này trả về giá trị kiểu object (ngày)
             return OracleHelper.ExecuteScalar(sql, parameters);
         }
-        
+
         public static decimal TinhLuongThang(int nhanVienId, int month, int year)
         {
             // Câu lệnh gọi hàm/function trong Oracle và lấy giá trị trả về
@@ -48,20 +48,37 @@ namespace BTL_LTTQ_QLPM.Databases
 
             try
             {
-                // Thực thi stored function/procedure. 
-                // Giả định OracleHelper.ExecuteNonQuery có thể xử lý tham số RETURN.
                 OracleHelper.ExecuteNonQuery(sql, parameters);
 
                 // 4. Lấy giá trị trả về từ tham số pResult
                 if (pResult.Value != null && pResult.Value != DBNull.Value)
                 {
+                    if (pResult.Value is Oracle.ManagedDataAccess.Types.OracleDecimal oracleDecimal)
+                    {
+                        // ⭐ SỬA: Sử dụng thuộc tính .Value để lấy System.Decimal
+                        // Thay vì .ToDecimal() không tồn tại.
+
+                        // ⭐ Xử lý Overflow xảy ra ở đây
+                        try
+                        {
+                            return oracleDecimal.Value; // Trả về System.Decimal
+                        }
+                        catch (OverflowException ex)
+                        {
+                            // Chú ý: Lỗi tràn số (Overflow) này xảy ra khi OracleDecimal.Value 
+                            // cố gắng chuyển đổi giá trị quá lớn của Oracle NUMBER sang System.Decimal
+                            throw new Exception($"Giá trị lương quá lớn ({oracleDecimal.ToString()} VNĐ) gây tràn số trong C#. Chi tiết: {ex.Message}");
+                        }
+                    }
+                    // Trường hợp dự phòng nếu kiểu dữ liệu trả về khác OracleDecimal
                     return Convert.ToDecimal(pResult.Value);
                 }
-                return 0m;
+                return 0m; // Giá trị mặc định nếu không có dữ liệu trả về
             }
             catch (Exception ex)
             {
-                // Xử lý lỗi trong DB Helper, ném lại ngoại lệ để Form có thể bắt
+                // Compiler vẫn cần một lệnh return ở đây, nhưng vì ta đang ném ngoại lệ
+                // nên ta giữ nguyên throw.
                 throw new Exception("Lỗi khi gọi FN_TINH_LUONG_THANG: " + ex.Message);
             }
         }

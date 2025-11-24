@@ -15,7 +15,7 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
     {
         public FormQuanLyPhongMay()
         {
-            
+
             InitializeComponent();
             this.Load += FormQuanLyPhongMay_Load;
         }
@@ -123,16 +123,36 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             if (dgvDanhSachPhong.SelectedRows.Count > 0)
             {
                 int phongMayId = Convert.ToInt32(dgvDanhSachPhong.SelectedRows[0].Cells["PHONG_ID"].Value);
-                string trangThaiHienTai = dgvDanhSachPhong.SelectedRows[0].Cells["TRANG_THAI"].Value.ToString();
 
-                // Logic đơn giản: Đảo trạng thái giữa 'Hoạt động' và 'Bảo trì'
-                string trangThaiMoi = (trangThaiHienTai == "Hoạt động") ? "Bảo trì" : "Hoạt động";
+                // Đảm bảo lấy trạng thái hiện tại dưới dạng chuỗi và loại bỏ khoảng trắng thừa
+                string trangThaiHienTai = dgvDanhSachPhong.SelectedRows[0].Cells["TRANG_THAI"].Value.ToString().Trim();
+
+                string trangThaiMoi;
+
+                // Logic tuần hoàn 3 trạng thái: Rảnh -> Hoạt động -> Bảo trì -> Rảnh
+                if (trangThaiHienTai == "Rảnh")
+                {
+                    trangThaiMoi = "Hoạt động";
+                }
+                else if (trangThaiHienTai == "Hoạt động")
+                {
+                    trangThaiMoi = "Bảo trì";
+                }
+                else if (trangThaiHienTai == "Bảo trì")
+                {
+                    trangThaiMoi = "Rảnh";
+                }
+                else
+                {
+                    // Xử lý trường hợp trạng thái hiện tại không hợp lệ (Mặc định chuyển về Rảnh)
+                    trangThaiMoi = "Rảnh";
+                }
 
                 string result = PhongMayDB.CapNhatTrangThai(phongMayId, trangThaiMoi);
 
                 if (result.Contains("thành công"))
                 {
-                    MessageBox.Show(result, "Thành công");
+                    MessageBox.Show($"Cập nhật trạng thái thành công. Trạng thái mới: {trangThaiMoi}", "Thành công");
                     LoadDanhSachPhongMay();
                 }
                 else
@@ -144,10 +164,8 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             {
                 MessageBox.Show("Vui lòng chọn một phòng để cập nhật trạng thái.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-        }
 
-        
         }
     }
-    
+}
 

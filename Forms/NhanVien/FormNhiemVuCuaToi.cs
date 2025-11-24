@@ -87,7 +87,7 @@ namespace BTL_LTTQ_QLPM.Forms.NhanVien
                 txtGhiChuBaoCao.Text = row.Cells["GHI_CHU"].Value.ToString();
 
                 // 3. Vô hiệu hóa cập nhật nếu đã Hoàn thành
-                if (trangThai == "HOAN_THANH")
+                if (trangThai == "Hoàn Thành")
                 {
                     MessageBox.Show("Nhiệm vụ này đã HOÀN THÀNH (100%), không thể cập nhật thêm.", "Thông báo");
                     btnCapNhatTienDo.Enabled = false;

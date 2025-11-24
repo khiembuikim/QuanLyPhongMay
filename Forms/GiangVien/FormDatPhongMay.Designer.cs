@@ -36,8 +36,6 @@
             this.txtNguoiDat = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtMonHoc = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.nudCaHoc = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.dtpNgay = new System.Windows.Forms.DateTimePicker();
             this.label7 = new System.Windows.Forms.Label();
@@ -49,7 +47,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.txtGhiChu = new System.Windows.Forms.TextBox();
             this.btnGuiYeuCau = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCaHoc)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSoSV)).BeginInit();
             this.SuspendLayout();
             // 
@@ -102,41 +99,24 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 84);
+            this.label3.Location = new System.Drawing.Point(2, 84);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 23);
+            this.label3.Size = new System.Drawing.Size(98, 23);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Môn:";
+            this.label3.Text = "Mục Đích:";
             // 
             // txtMonHoc
             // 
-            this.txtMonHoc.Location = new System.Drawing.Point(80, 86);
+            this.txtMonHoc.Location = new System.Drawing.Point(106, 84);
             this.txtMonHoc.Name = "txtMonHoc";
-            this.txtMonHoc.Size = new System.Drawing.Size(445, 22);
+            this.txtMonHoc.Size = new System.Drawing.Size(419, 22);
             this.txtMonHoc.TabIndex = 14;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(12, 125);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(41, 23);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Ca:";
-            // 
-            // nudCaHoc
-            // 
-            this.nudCaHoc.Location = new System.Drawing.Point(80, 128);
-            this.nudCaHoc.Name = "nudCaHoc";
-            this.nudCaHoc.Size = new System.Drawing.Size(44, 22);
-            this.nudCaHoc.TabIndex = 16;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(160, 127);
+            this.label6.Location = new System.Drawing.Point(12, 126);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(61, 23);
             this.label6.TabIndex = 17;
@@ -144,7 +124,7 @@
             // 
             // dtpNgay
             // 
-            this.dtpNgay.Location = new System.Drawing.Point(228, 127);
+            this.dtpNgay.Location = new System.Drawing.Point(141, 126);
             this.dtpNgay.Name = "dtpNgay";
             this.dtpNgay.Size = new System.Drawing.Size(297, 22);
             this.dtpNgay.TabIndex = 18;
@@ -245,8 +225,6 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.dtpNgay);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.nudCaHoc);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.txtMonHoc);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtNguoiDat);
@@ -257,7 +235,6 @@
             this.Name = "FormDatPhongMay";
             this.Text = "FormDatPhongMay";
             this.Load += new System.EventHandler(this.FormDatPhongMay_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.nudCaHoc)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSoSV)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -273,8 +250,6 @@
         private System.Windows.Forms.TextBox txtNguoiDat;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtMonHoc;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown nudCaHoc;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.DateTimePicker dtpNgay;
         private System.Windows.Forms.Label label7;

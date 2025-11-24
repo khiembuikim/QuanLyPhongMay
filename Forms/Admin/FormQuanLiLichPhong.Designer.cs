@@ -29,15 +29,14 @@
         private void InitializeComponent()
         {
             this.TopPanel = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnLoc = new System.Windows.Forms.Button();
             this.cboTrangThaiLoc = new System.Windows.Forms.ComboBox();
             this.dtpNgayLoc = new System.Windows.Forms.DateTimePicker();
-            this.btnLoc = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.dgvLichDat = new System.Windows.Forms.DataGridView();
             this.btnDuyet = new System.Windows.Forms.Button();
-            this.btnChiTiet = new System.Windows.Forms.Button();
             this.btnTuChoi = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
             this.TopPanel.SuspendLayout();
@@ -58,6 +57,30 @@
             this.TopPanel.TabIndex = 0;
             this.TopPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TopPanel_Paint);
             // 
+            // panel2
+            // 
+            this.panel2.Location = new System.Drawing.Point(7, 45);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(794, 381);
+            this.panel2.TabIndex = 4;
+            // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(8, 45);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(794, 382);
+            this.panel1.TabIndex = 3;
+            // 
+            // btnLoc
+            // 
+            this.btnLoc.Location = new System.Drawing.Point(706, 20);
+            this.btnLoc.Name = "btnLoc";
+            this.btnLoc.Size = new System.Drawing.Size(75, 23);
+            this.btnLoc.TabIndex = 2;
+            this.btnLoc.Text = "Lọc";
+            this.btnLoc.UseVisualStyleBackColor = true;
+            this.btnLoc.Click += new System.EventHandler(this.btnLoc_Click);
+            // 
             // cboTrangThaiLoc
             // 
             this.cboTrangThaiLoc.FormattingEnabled = true;
@@ -72,30 +95,6 @@
             this.dtpNgayLoc.Name = "dtpNgayLoc";
             this.dtpNgayLoc.Size = new System.Drawing.Size(200, 22);
             this.dtpNgayLoc.TabIndex = 0;
-            // 
-            // btnLoc
-            // 
-            this.btnLoc.Location = new System.Drawing.Point(706, 20);
-            this.btnLoc.Name = "btnLoc";
-            this.btnLoc.Size = new System.Drawing.Size(75, 23);
-            this.btnLoc.TabIndex = 2;
-            this.btnLoc.Text = "Lọc";
-            this.btnLoc.UseVisualStyleBackColor = true;
-            this.btnLoc.Click += new System.EventHandler(this.btnLoc_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Location = new System.Drawing.Point(8, 45);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(794, 382);
-            this.panel1.TabIndex = 3;
-            // 
-            // panel2
-            // 
-            this.panel2.Location = new System.Drawing.Point(7, 45);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(794, 381);
-            this.panel2.TabIndex = 4;
             // 
             // panel3
             // 
@@ -132,19 +131,9 @@
             this.btnDuyet.UseVisualStyleBackColor = true;
             this.btnDuyet.Click += new System.EventHandler(this.btnDuyet_Click);
             // 
-            // btnChiTiet
-            // 
-            this.btnChiTiet.Location = new System.Drawing.Point(270, 472);
-            this.btnChiTiet.Name = "btnChiTiet";
-            this.btnChiTiet.Size = new System.Drawing.Size(75, 23);
-            this.btnChiTiet.TabIndex = 3;
-            this.btnChiTiet.Text = "Chi Tiết";
-            this.btnChiTiet.UseVisualStyleBackColor = true;
-            this.btnChiTiet.Click += new System.EventHandler(this.btnChiTiet_Click);
-            // 
             // btnTuChoi
             // 
-            this.btnTuChoi.Location = new System.Drawing.Point(488, 471);
+            this.btnTuChoi.Location = new System.Drawing.Point(391, 472);
             this.btnTuChoi.Name = "btnTuChoi";
             this.btnTuChoi.Size = new System.Drawing.Size(75, 23);
             this.btnTuChoi.TabIndex = 4;
@@ -169,7 +158,6 @@
             this.ClientSize = new System.Drawing.Size(844, 499);
             this.Controls.Add(this.btnXoa);
             this.Controls.Add(this.btnTuChoi);
-            this.Controls.Add(this.btnChiTiet);
             this.Controls.Add(this.btnDuyet);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.TopPanel);
@@ -194,7 +182,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.DataGridView dgvLichDat;
         private System.Windows.Forms.Button btnDuyet;
-        private System.Windows.Forms.Button btnChiTiet;
         private System.Windows.Forms.Button btnTuChoi;
         private System.Windows.Forms.Button btnXoa;
     }

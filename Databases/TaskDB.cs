@@ -18,7 +18,7 @@ namespace BTL_LTTQ_QLPM.Databases
             GHI_CHU = :ghiChu,
             TRANG_THAI = CASE 
                             WHEN :tienDoCheck = 100 THEN 'HOAN_THANH'
-                            ELSE 'DANG_THUC_HIEN'
+                            ELSE 'Đang thực hiện'
                          END
         WHERE TASK_ID = :taskId";
 
@@ -83,7 +83,7 @@ namespace BTL_LTTQ_QLPM.Databases
                 LT.NGAY_TRUC AS THOI_GIAN, -- Lấy Ngày trực
                 'Lịch trực ca' AS LOAI_SU_KIEN,
                 100 AS TIEN_DO, -- Giả định ca trực là 100%
-                'HOAN_THANH' AS TRANG_THAI -- Trạng thái ca trực (đã lên lịch)
+                'Hoàn Thành' AS TRANG_THAI -- Trạng thái ca trực (đã lên lịch)
             FROM LICHTRUC LT
             WHERE 
                 LT.NHANVIEN_ID = :nvIdTruc 

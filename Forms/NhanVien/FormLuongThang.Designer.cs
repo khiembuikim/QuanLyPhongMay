@@ -45,9 +45,13 @@
             // 
             // dgvLichSuLuong
             // 
+            this.dgvLichSuLuong.AllowUserToAddRows = false;
+            this.dgvLichSuLuong.AllowUserToDeleteRows = false;
+            this.dgvLichSuLuong.AllowUserToOrderColumns = true;
             this.dgvLichSuLuong.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLichSuLuong.Location = new System.Drawing.Point(0, 44);
             this.dgvLichSuLuong.Name = "dgvLichSuLuong";
+            this.dgvLichSuLuong.ReadOnly = true;
             this.dgvLichSuLuong.RowHeadersWidth = 51;
             this.dgvLichSuLuong.RowTemplate.Height = 24;
             this.dgvLichSuLuong.Size = new System.Drawing.Size(804, 407);

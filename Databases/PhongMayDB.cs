@@ -160,11 +160,11 @@ namespace BTL_LTTQ_QLPM.Databases
         }
         public static string XoaPhong(int phongMayId)
         {
-            // Dùng DELETE để xóa vật lý. Cần đảm bảo không vi phạm khóa ngoại.
-            string sqlDelete = "DELETE FROM PHONGMAY WHERE PHONG_ID = :id";
+            // SQL cho việc xóa máy tính liên quan (giả định bảng MAYTINH có cột PHONG_ID)
+            string sqlDeleteMayTinh = "DELETE FROM MAYTINH WHERE PHONG_ID = :id";
 
-            // Nếu phòng có dữ liệu liên quan, bạn phải xóa/cập nhật dữ liệu liên quan trước.
-            // Ví dụ: string sqlDeleteLichSu = "DELETE FROM LICH_SU_SD WHERE PHONGMAY_ID = :id";
+            // SQL gốc: Dùng DELETE để xóa vật lý.
+            string sqlDeletePhong = "DELETE FROM PHONGMAY WHERE PHONG_ID = :id";
 
             using (OracleConnection conn = OracleHelper.GetConnection())
             {
@@ -173,37 +173,46 @@ namespace BTL_LTTQ_QLPM.Databases
 
                 try
                 {
-                    // Bước 1: (Tùy chọn) Xóa các bản ghi liên quan (nếu cần)
-                    // (Thêm code xóa LICH_SU_SD nếu cần)
-
-                    // Bước 2: Xóa phòng máy
+                    // Định nghĩa tham số ID (sử dụng chung cho các lệnh)
                     OracleParameter[] parameters = new OracleParameter[]
                     {
                 new OracleParameter("id", OracleDbType.Decimal) { Value = phongMayId }
                     };
 
-                    // Sử dụng logic thực thi NonQuery với Transaction
-                    OracleCommand cmd = new OracleCommand(sqlDelete, conn);
-                    cmd.Transaction = transaction;
-                    cmd.Parameters.AddRange(parameters);
-
-                    int rowsAffected = cmd.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
+                    // Bước 1: 🖥️ XÓA CÁC MÁY TÍNH LIÊN QUAN TRONG PHÒNG
+                    // Lệnh này đảm bảo không còn bản ghi con tham chiếu đến PHONGMAY.PHONG_ID
+                    using (OracleCommand cmdMayTinh = new OracleCommand(sqlDeleteMayTinh, conn))
                     {
-                        transaction.Commit();
-                        return "Xóa phòng máy thành công.";
+                        cmdMayTinh.Transaction = transaction;
+                        cmdMayTinh.Parameters.AddRange(parameters);
+                        cmdMayTinh.ExecuteNonQuery(); // Không cần kiểm tra rowsAffected, chỉ cần đảm bảo chạy thành công
                     }
-                    else
+
+                    // Bước 2: 🏢 XÓA PHÒNG MÁY CHÍNH
+                    using (OracleCommand cmdPhong = new OracleCommand(sqlDeletePhong, conn))
                     {
-                        transaction.Rollback();
-                        return "Lỗi: Không tìm thấy phòng để xóa.";
+                        cmdPhong.Transaction = transaction;
+                        cmdPhong.Parameters.AddRange(parameters);
+
+                        int rowsAffected = cmdPhong.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            transaction.Commit();
+                            return "Xóa phòng máy thành công.";
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return "Lỗi: Không tìm thấy phòng để xóa.";
+                        }
                     }
                 }
                 catch (OracleException ex) when (ex.Number == 2292) // ORA-02292: child record found
                 {
+                    // Lỗi này hiếm khi xảy ra sau khi xóa MAYTINH, nhưng vẫn giữ lại để bắt các bảng con khác (nếu có)
                     transaction.Rollback();
-                    return "Lỗi: Phòng này đã có lịch sử sử dụng. Không thể xóa vật lý.";
+                    return "Lỗi: Phòng này vẫn còn dữ liệu liên quan. Không thể xóa vật lý.";
                 }
                 catch (Exception ex)
                 {

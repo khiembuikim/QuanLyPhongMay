@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,9 +18,99 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
 
         public FormQuanLyMayTinh()
         {
-            InitializeComponent(); // Khởi tạo các components (controls UI)
-                                   // Thiết lập sự kiện cho nút Refresh/Lọc
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            InitializeComponent();
+            LoadDataToComboBoxes();
+            LoadMayTinh();
+
+            // Gán sự kiện lọc
+            this.cboFilterPhong.SelectedIndexChanged += cboLoc_SelectedIndexChanged;
+            this.cboFilterTrangThai.SelectedIndexChanged += cboLoc_SelectedIndexChanged; // Khởi tạo các components (controls UI)
+                                                                                      // Thiết lập sự kiện cho nút Refresh/Lọc
+
+        }
+        private void LoadDataToComboBoxes()
+        {
+            // 1. Lọc theo Phòng Máy (Sử dụng hàm GetLookupPhongMay)
+            DataTable dtPhong = MayTinhDB.GetLookupPhongMay();
+
+            // Thêm tùy chọn "Tất cả Phòng" (PHONG_ID = 0)
+            DataRow allRow = dtPhong.NewRow();
+            allRow["PHONG_ID"] = 0;
+            allRow["TEN_PHONG"] = "Tất cả Phòng";
+            dtPhong.Rows.InsertAt(allRow, 0);
+
+            cboFilterPhong.DataSource = dtPhong;
+            cboFilterPhong.DisplayMember = "TEN_PHONG";
+            cboFilterPhong.ValueMember = "PHONG_ID";
+            cboFilterPhong.SelectedIndex = 0;
+
+            // 2. Lọc theo Trạng Thái
+            DataTable dtTrangThai = new DataTable();
+            dtTrangThai.Columns.Add("Display");
+            dtTrangThai.Columns.Add("Value");
+
+            dtTrangThai.Rows.Add("Tất cả Trạng thái", "TatCa"); // Lọc không cần điều kiện WHERE
+            dtTrangThai.Rows.Add("Hoạt động tốt (TOT)", "TOT");
+            dtTrangThai.Rows.Add("Đang Bảo trì", "BAOTRI");
+            dtTrangThai.Rows.Add("Bị Lỗi (LOI:XXX)", "LOI"); // Sẽ lọc LIKE 'LOI:%'
+
+            cboFilterTrangThai.DataSource = dtTrangThai;
+            cboFilterTrangThai.DisplayMember = "Display";
+            cboFilterTrangThai.ValueMember = "Value";
+            cboFilterTrangThai.SelectedIndex = 0;
+        }
+
+        private void LoadMayTinh()
+        {
+            try
+            {
+                // 1. Lấy giá trị PHÒNG MÁY an toàn
+                int phongIdSelected = 0;
+                // Kiểm tra cboLocPhong và SelectedValue KHÔNG NULL
+                if (cboFilterPhong != null && cboFilterPhong.SelectedValue != null && cboFilterPhong.SelectedValue != DBNull.Value)
+                {
+                    phongIdSelected = Convert.ToInt32(cboFilterPhong.SelectedValue);
+                }
+
+                // 2. Lấy giá trị TRẠNG THÁI an toàn
+                string trangThai = "TatCa"; // Mặc định là 'TatCa'
+                                            // Kiểm tra cboLocTrangThai và SelectedValue KHÔNG NULL
+                if (cboFilterTrangThai != null && cboFilterTrangThai.SelectedValue != null)
+                {
+                    // Nếu có giá trị, gán giá trị
+                    trangThai = cboFilterTrangThai.SelectedValue.ToString();
+                }
+
+                // 3. Chuẩn bị tham số int?
+                int? filterPhongId = (phongIdSelected != 0) ? (int?)phongIdSelected : null;
+
+                // 4. Gọi hàm lọc (Giả định hàm GetMayTinhFiltered(int?, string) đã được giữ lại và hàm object đã bị xóa)
+                DataTable dt = MayTinhDB.GetMayTinhFiltered(filterPhongId, trangThai);
+
+                // 5. Gán và cấu hình (Đã đúng)
+                dgvDanhSachMay.DataSource = dt;
+
+                // Cấu hình cột
+                // ... (phần cấu hình cột giữ nguyên) ...
+                dgvDanhSachMay.Columns["MAY_ID"].Visible = false;
+                dgvDanhSachMay.Columns["PHONG_ID"].Visible = false;
+
+                dgvDanhSachMay.Columns["MA_MAY"].HeaderText = "Mã Máy";
+                dgvDanhSachMay.Columns["TEN_PHONG"].HeaderText = "Phòng Máy";
+                dgvDanhSachMay.Columns["VI_TRI"].HeaderText = "Vị Trí";
+                dgvDanhSachMay.Columns["TRANG_THAI"].HeaderText = "Trạng Thái";
+                dgvDanhSachMay.Columns["GHI_CHU"].HeaderText = "Ghi Chú Chi Tiết";
+                dgvDanhSachMay.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu máy tính: " + ex.Message, "Lỗi Database");
+            }
+        }
+             private void cboLoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Tải lại dữ liệu khi người dùng thay đổi bộ lọc
+            LoadMayTinh();
         }
         private void FormQuanLyMayTinh_Load(object sender, EventArgs e)
         {
@@ -36,17 +127,15 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
         }
         private void SetupFilters()
         {
-            // --- 1. Gọi hàm thiết lập Lọc Phòng (Đã được định nghĩa ở dưới) ---
+          
             SetupPhongFilter();
 
-            // --- 2. Gọi hàm thiết lập Lọc Trạng Thái (Đã được định nghĩa ở dưới) ---
+            // 2. Gọi hàm thiết lập Lọc Trạng Thái
             SetupTrangThaiFilter();
 
-            // Thiết lập chọn mặc định là dòng "Tất cả" (Index 0)
-            cboFilterPhong.SelectedIndex = 0;
-            cboFilterTrangThai.SelectedIndex = 0;
+            // Không cần SelectedIndex = 0 ở đây vì đã gọi trong Setup*Filter()
 
-            // 💡 Gắn sự kiện SelectedIndexChanged ở đây hoặc trong Designer
+            // Gắn sự kiện SelectedIndexChanged ở đây
             this.cboFilterPhong.SelectedIndexChanged += new System.EventHandler(this.cboFilterPhong_SelectedIndexChanged);
             this.cboFilterTrangThai.SelectedIndexChanged += new System.EventHandler(this.cboFilterTrangThai_SelectedIndexChanged);
         }
@@ -76,37 +165,38 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
         }
         private void LoadDanhSachMayTinh(object filterPhongId, string filterTrangThai)
         {
-            // --- Xử lý PHONG_ID ---
-            int? phongId = null;
+            // --- 1. Xử lý PHONG_ID ---
+            int phongIdSelected = 0;
             if (filterPhongId != null && filterPhongId != DBNull.Value)
             {
-                // 🚨 CHỈ THỰC HIỆN TRY PARSE NẾU KHÔNG PHẢI NULL/DBNULL
+                // Chuyển PHONG_ID sang int
                 if (int.TryParse(filterPhongId.ToString(), out int id))
                 {
-                    phongId = id;
+                    phongIdSelected = id;
                 }
-                // Nếu không phải int hợp lệ, nó sẽ vẫn là null. Điều này giúp an toàn.
             }
 
-            // --- Xử lý TRANG THÁI ---
-            string trangThai = null;
-            // Kiểm tra nếu giá trị không phải null, không phải rỗng, và không phải DBNull
-            if (filterTrangThai != null && filterTrangThai != DBNull.Value.ToString() && !string.IsNullOrEmpty(filterTrangThai))
+            // Chuyển sang int? (null nếu là "Tất cả" = 0)
+            int? filterPhongIdInt = (phongIdSelected != 0) ? (int?)phongIdSelected : null;
+
+            // --- 2. Xử lý TRANG THÁI ---
+            string trangThai = filterTrangThai ?? "TatCa";
+
+            try
             {
-                // Gán mã trạng thái (TOT, LOI, BAOTRI)
-                trangThai = filterTrangThai;
+                // 🌟 GỌI HÀM DB
+                DataTable dtMayTinh = MayTinhDB.GetMayTinhWithFilter(filterPhongIdInt, trangThai);
+                dgvDanhSachMay.DataSource = dtMayTinh;
+
+                // 💡 Định dạng DataGridView sau khi đã tải dữ liệu thành công
+                SetupDataGridView();
             }
-            // Chú ý: Nếu cboFilterTrangThai.SelectedValue là DBNull.Value, thì filterTrangThai (là string)
-            // sẽ là null, điều này đã được xử lý bằng code LoadDanhSachMayTinh ở trên.
-
-            // 🌟 GỌI HÀM DB
-            // Đảm bảo rằng hàm GetMayTinhWithFilter đã được sửa ở trên
-            DataTable dtMayTinh = MayTinhDB.GetMayTinhWithFilter(phongId, trangThai);
-            dgvDanhSachMay.DataSource = dtMayTinh;
-
-            // 💡 Thêm bước này để định dạng DataGridView sau khi đã tải dữ liệu thành công
-            SetupDataGridView();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách máy tính: " + ex.Message, "Lỗi Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+        
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
@@ -129,18 +219,7 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             }
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            // Lấy PHONG_ID đã chọn. SelectedValue là object, có thể là DBNull.Value
-            object phongId = cboFilterPhong.SelectedValue;
-
-            // Lấy mã Trạng Thái đã chọn. 
-            // Dùng ?.ToString() để tránh lỗi nếu SelectedValue là null
-            string trangThai = cboFilterTrangThai.SelectedValue?.ToString();
-
-            // Gọi hàm tải dữ liệu với các giá trị lọc mới
-            LoadDanhSachMayTinh(phongId, trangThai);
-        }
+      
 
         private void btnSuaViTri_Click(object sender, EventArgs e)
         {
@@ -304,14 +383,11 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
         private void SetupTrangThaiFilter()
         {
             DataTable dtTrangThai = new DataTable();
-            // ✅ THÊM KIỂU DỮ LIỆU
-            dtTrangThai.Columns.Add("Code", typeof(string)); // Mã trạng thái dùng trong DB
-            dtTrangThai.Columns.Add("Name", typeof(string)); // Tên hiển thị cho người dùng
+            dtTrangThai.Columns.Add("Code", typeof(string));
+            dtTrangThai.Columns.Add("Name", typeof(string));
 
             // Thêm tùy chọn "Tất cả"
-            dtTrangThai.Rows.Add(DBNull.Value, "--- Tất cả Trạng Thái ---"); // Đổi thành format dễ nhìn
-
-            // Thêm các trạng thái cụ thể
+            dtTrangThai.Rows.Add("TatCa", "--- Tất cả Trạng Thái ---");
             dtTrangThai.Rows.Add("TOT", "Tốt");
             dtTrangThai.Rows.Add("LOI", "Lỗi (Bao gồm lỗi chi tiết)");
             dtTrangThai.Rows.Add("BAOTRI", "Đang bảo trì");
@@ -320,19 +396,30 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             cboFilterTrangThai.DataSource = dtTrangThai;
             cboFilterTrangThai.DisplayMember = "Name";
             cboFilterTrangThai.ValueMember = "Code";
+
+            // Gán SelectedIndex = 0 ở đây là thừa vì đã có trong SetupFilters(), 
+            // nhưng ta giữ lại để đảm bảo ComboBox có giá trị mặc định ngay khi được gán.
+            cboFilterTrangThai.SelectedIndex = 0;
         }
         private void SetupPhongFilter()
         {
-            // 1. Lấy dữ liệu từ DB (Hàm này đang hoạt động tốt ở các Form khác)
+            // 1. Lấy dữ liệu từ DB 
             DataTable dtPhong = Databases.PhongMayDB.GetLookupPhongMay();
 
-            // 2. Đảm bảo cấu trúc cột (Đã có trong code gốc của bạn, rất tốt)
-            if (!dtPhong.Columns.Contains("PHONG_ID")) dtPhong.Columns.Add("PHONG_ID", typeof(int));
-            if (!dtPhong.Columns.Contains("TEN_PHONG")) dtPhong.Columns.Add("TEN_PHONG", typeof(string));
+            // 🚨 Sửa lỗi: Nếu dtPhong bị NULL hoặc không có cấu trúc cột
+            if (dtPhong == null || dtPhong.Columns.Count == 0 || !dtPhong.Columns.Contains("PHONG_ID"))
+            {
+                // Nếu DB bị lỗi, ta tạo cấu trúc mặc định để không crash khi gọi NewRow()
+                DataTable tempDt = new DataTable();
+                // Dùng typeof(int) vì giá trị 0 được sử dụng
+                tempDt.Columns.Add("PHONG_ID", typeof(int));
+                tempDt.Columns.Add("TEN_PHONG", typeof(string));
+                dtPhong = tempDt;
+            }
 
-            // --- 3. Thêm dòng "Tất cả Phòng" ---
+            // --- 3. Thêm dòng "Tất cả Phòng" (PHONG_ID = 0) ---
             DataRow allRow = dtPhong.NewRow();
-            allRow["PHONG_ID"] = DBNull.Value;
+            allRow["PHONG_ID"] = 0;
             allRow["TEN_PHONG"] = "--- Tất cả Phòng ---";
             dtPhong.Rows.InsertAt(allRow, 0);
 
@@ -340,9 +427,7 @@ namespace BTL_LTTQ_QLPM.Forms.Admin
             cboFilterPhong.DataSource = dtPhong;
             cboFilterPhong.DisplayMember = "TEN_PHONG";
             cboFilterPhong.ValueMember = "PHONG_ID";
-
-            // 🚨 QUAN TRỌNG: Cần đặt lại SelectedIndex sau khi gán DataSource
-            cboFilterPhong.SelectedIndex = 0; // Đảm bảo chọn "Tất cả Phòng"
+            cboFilterPhong.SelectedIndex = 0;
         }
     }
 }
